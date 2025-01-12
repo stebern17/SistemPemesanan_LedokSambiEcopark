@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('menu_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('dining_table_id')->constrained()->cascadeOnDelete();
-            $table->decimal('total_amount', 10, 2);
+            $table->unsignedInteger('quantity');
+            $table->unsignedBigInteger('price');
+            $table->unsignedBigInteger('total_amount');
             $table->timestamps();
         });
     }

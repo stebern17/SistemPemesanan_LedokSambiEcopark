@@ -10,20 +10,20 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'menu_id',
         'dining_table_id',
         'status',
-        'quantity',
-        'price',
     ];
+
 
     /**  
      * Relationship with Menu model.  
      */
-    public function menu()
+    public function items()
     {
-        return $this->belongsTo(Menu::class);
+        return $this->hasMany(OrderDetail::class);
     }
+
+
 
     /**  
      * Relationship with DiningTable model.  

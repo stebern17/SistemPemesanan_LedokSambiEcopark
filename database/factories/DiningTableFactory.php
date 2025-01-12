@@ -17,7 +17,9 @@ class DiningTableFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'number' => $this->faker->unique()->numberBetween(1, 20),
+            'status' => 'available',
+            'position' => $this->faker->randomElement(['pendopo', 'timur sungai', 'barat sungai']),
         ];
     }
 }

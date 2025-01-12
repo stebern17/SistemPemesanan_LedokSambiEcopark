@@ -15,5 +15,12 @@ class Menu extends Model
         'description',
         'price',
         'image', // jika ada kolom lain  
+        'category',
+
     ];
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
 }

@@ -13,11 +13,8 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_id')->constrained()->onDelete('cascade');
             $table->foreignId('dining_table_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['waiting', 'served', 'canceled']);
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2);
             $table->timestamps();
         });
     }

@@ -13,7 +13,8 @@ class OrderDetail extends Model
     protected $fillable = [
         'order_id',
         'menu_id',
-        'dining_table_id',
+        'price',
+        'quantity',
         'total_amount',
     ];
 
@@ -25,10 +26,5 @@ class OrderDetail extends Model
     public function menu()
     {
         return $this->belongsTo(Menu::class);
-    }
-
-    public function diningTable()
-    {
-        return $this->belongsTo(DiningTable::class);
     }
 }

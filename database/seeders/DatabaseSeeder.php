@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\DiningTable;
+use App\Models\Menu;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -18,6 +20,9 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => bcrypt('password'),
         ]);
+        DiningTable::factory(5)->create();
+        Menu::factory(10)->create();
     }
 }

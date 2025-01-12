@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.fi-body {
+    background-color: #e2e1cf;
+}
+
+.fi-sidebar,
+.fi-topbar > nav,
+.fi-sidebar-header {
+    background-color: #108482 !important;
+}
+
+.fi-ta-actions > a > span,
+.fi-ta-actions > a > svg {
+    color: #108482;
+}
+
+.fi-sidebar-header .fi-logo {
+    color: #fff;
+}
+
+.fi-sidebar-item-icon,
+.fi-sidebar-item-label,
+.fi-btn-label {
+    color: #fff;
+}
+
+.fi-breadcrumbs-item-label,
+.fi-header-heading {
+    color: #414247;
+}
+
+.fi-btn {
+    background-color: #414247 !important;
+}
