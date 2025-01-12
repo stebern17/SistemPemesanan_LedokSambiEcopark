@@ -89,9 +89,9 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status'),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Total Amount')
-                    ->formatStateUsing(function ($record) {
-                        return $record->items->sum('total_amount');
-                    })
+                    // ->formatStateUsing(function ($record) {
+                    //     return $record->items->sum('total_amount');
+                    // })
                     ->money('idr')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

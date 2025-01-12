@@ -14,6 +14,15 @@ class Order extends Model
         'status',
     ];
 
+    protected $appends = [
+        'total_amount',
+    ];
+
+    public function getTotalAmountAttribute()
+    {
+        return $this->items->sum('total_amount');
+    }
+
 
 
     public function items()
