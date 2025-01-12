@@ -15,9 +15,7 @@ class Order extends Model
     ];
 
 
-    /**  
-     * Relationship with Menu model.  
-     */
+
     public function items()
     {
         return $this->hasMany(OrderDetail::class);
