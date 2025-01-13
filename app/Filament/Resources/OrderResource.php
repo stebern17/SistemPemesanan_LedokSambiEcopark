@@ -78,20 +78,22 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('menu_id')
-                    ->label('Menus')
-                    ->formatStateUsing(function ($state) {
-                        return collect($state)->pluck('menu_id')->implode(', ');
-                    }),
-                Tables\Columns\TextColumn::make('dining_table_id')
+                Tables\Columns\TextColumn::make('DiningTable.number')
                     ->numeric()
+                    ->alignCenter()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('DiningTable.position')
+                    ->formatStateUsing(fn($state) => ucfirst($state))
+                    ->label('Location'),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge(fn($state) => match ($state) {
+                        'waiting' => 'primary',
+                        'served' => 'success',
+                        'cancelled' => 'danger',
+                    })
+                    ->formatStateUsing(fn($state) => ucfirst($state)),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Total Amount')
-                    // ->formatStateUsing(function ($record) {
-                    //     return $record->items->sum('total_amount');
-                    // })
                     ->money('idr')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

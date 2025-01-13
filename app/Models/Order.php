@@ -23,8 +23,6 @@ class Order extends Model
         return $this->items->sum('total_amount');
     }
 
-
-
     public function items()
     {
         return $this->hasMany(OrderDetail::class);
