@@ -3,35 +3,49 @@
 @tailwind utilities;
 
 .fi-body {
-    background-color: #e2e1cf;
+    @apply bg-[#e2e1cf];
 }
 
 .fi-sidebar,
-.fi-topbar > nav,
-.fi-sidebar-header {
-    background-color: #108482 !important;
+.fi-sidebar-header,
+.fi-topbar > nav {
+    @apply bg-[#108482] !important;
 }
 
 .fi-ta-actions > a > span,
 .fi-ta-actions > a > svg {
-    color: #108482;
+    @apply text-[#108482] !important;
 }
 
 .fi-sidebar-header .fi-logo {
-    color: #fff;
+    @apply text-white !important;
 }
 
+/* Regular state */
 .fi-sidebar-item-icon,
 .fi-sidebar-item-label,
 .fi-btn-label {
-    color: #fff;
+    @apply text-white transition-colors duration-200 !important;
+}
+
+/* Hover dan Active state menggunakan warna yang sama */
+.fi-sidebar-item .fi-sidebar-item-icon:hover,
+.fi-sidebar-item .fi-sidebar-item-label:hover,
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+.fi-sidebar-item.fi-active .fi-sidebar-item-label,
+.fi-btn-label:hover {
+    @apply text-[#108482] !important;
+}
+
+.fi-sidebar-item-button {
+    @apply hover:bg-[#414247];
 }
 
 .fi-breadcrumbs-item-label,
 .fi-header-heading {
-    color: #414247;
+    @apply text-[#414247];
 }
 
 .fi-btn {
-    background-color: #414247 !important;
+    @apply bg-[#414247] !important;
 }

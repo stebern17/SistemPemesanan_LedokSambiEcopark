@@ -52,14 +52,18 @@ class MenuResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\ImageColumn::make('image'),
+                    ->searchable()
+                    ->alignCenter(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('category')
-                    ->formatStateUsing(fn($state) => ucfirst($state)),
+                    ->formatStateUsing(fn($state) => ucfirst($state))
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('price')
                     ->prefix('Rp. ')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

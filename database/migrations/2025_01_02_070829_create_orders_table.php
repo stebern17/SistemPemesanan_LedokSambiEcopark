@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dining_table_id')->constrained()->onDelete('cascade');
             $table->enum('status', ['waiting', 'served', 'canceled']);
+            $table->boolean('is_paid')->default(false);
             $table->timestamps();
         });
     }

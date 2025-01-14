@@ -52,11 +52,17 @@ class DiningTableResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('number')
                     ->numeric()
+                    ->alignCenter()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->formatStateUsing(fn($state) => ucfirst($state)),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options([
+                        'available' => 'Available',
+                        'unavailable' => 'Unavailable',
+                    ])
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('position')
-                    ->formatStateUsing(fn($state) => ucfirst($state)),
+                    ->formatStateUsing(fn($state) => ucfirst($state))
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

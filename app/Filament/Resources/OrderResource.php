@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
+use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -28,41 +30,43 @@ class OrderResource extends Resource
                     ->label('Menu')
                     ->schema([
                         Forms\Components\Select::make('menu_id')
-                            ->relationship('menu', 'name') // Corrected relationship
+                            ->relationship('menu', 'name')
                             ->required()
                             ->searchable()
                             ->preload()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set) {
-                                // Fetch the price of the selected menu and set it
                                 $menu = \App\Models\Menu::find($state);
                                 $set('price', $menu ? $menu->price : 0);
                             }),
                         Forms\Components\TextInput::make('quantity')
                             ->required()
                             ->numeric()
-                            ->reactive() // Make it reactive to trigger updates
+                            ->reactive()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                                // Update the total price based on quantity and menu price
                                 $pricePerItem = $get('price');
                                 $set('total_amount', $pricePerItem * $state);
                             }),
-
                         Forms\Components\TextInput::make('price')
                             ->numeric()
                             ->prefix('Rp.')
                             ->readOnly(),
-
                         Forms\Components\TextInput::make('total_amount')
                             ->numeric()
                             ->prefix('Rp.')
                             ->readOnly(),
-
                     ])
-                    ->addActionLabel('Add Menu'),
+                    ->addActionLabel('Add Menu')
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        $total = collect($state)->sum('total_amount');
+                        $set('grand_total', $total);
+                    }),
+
                 Forms\Components\Select::make('dining_table_id')
                     ->relationship('diningTable', 'number')
                     ->required(),
+
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->options([
@@ -71,6 +75,45 @@ class OrderResource extends Resource
                         'cancelled' => 'Cancelled',
                     ])
                     ->required(),
+
+                Forms\Components\TextInput::make('grand_total')
+                    ->label('Total Amount')
+                    ->prefix('Rp.')
+                    ->disabled()
+                    ->numeric(),
+
+                Forms\Components\Section::make('Payment')
+                    ->schema([
+                        Forms\Components\TextInput::make('received_amount')
+                            ->label('Amount Received')
+                            ->prefix('Rp.')
+                            ->numeric()
+                            ->required()
+                            ->reactive()
+                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                $grandTotal = $get('grand_total') ?? 0;
+                                if ($state < $grandTotal) {
+                                    Notification::make()
+                                        ->warning()
+                                        ->title('Warning')
+                                        ->body('Amount received is less than total amount')
+                                        ->send();
+                                }
+                                $change = max(0, $state - $grandTotal);
+                                $set('change_amount', $change);
+                                $set('is_paid', $state >= $grandTotal);
+                            }),
+
+                        Forms\Components\TextInput::make('change_amount')
+                            ->label('Change')
+                            ->prefix('Rp.')
+                            ->disabled()
+                            ->numeric(),
+
+                        Forms\Components\Hidden::make('is_paid')
+                            ->default(true),
+                    ])
+                    ->collapsed(false),
             ]);
     }
 
@@ -84,18 +127,26 @@ class OrderResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('DiningTable.position')
                     ->formatStateUsing(fn($state) => ucfirst($state))
-                    ->label('Location'),
-                Tables\Columns\TextColumn::make('status')
-                    ->badge(fn($state) => match ($state) {
-                        'waiting' => 'primary',
-                        'served' => 'success',
-                        'cancelled' => 'danger',
-                    })
-                    ->formatStateUsing(fn($state) => ucfirst($state)),
+                    ->label('Location')
+                    ->alignCenter(),
+                Tables\Columns\SelectColumn::make('status')
+                    ->options([
+                        'waiting' => 'Waiting',
+                        'served' => 'Served',
+                        'cancelled' => 'Cancelled',
+                    ])
+                    ->alignCenter(),
+                Tables\Columns\IconColumn::make('is_paid')
+                    ->label('Paid')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-badge')
+                    ->falseIcon('heroicon-o-x-mark')
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->label('Total Amount')
                     ->money('idr')
-                    ->sortable(),
+                    ->sortable()
+                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -109,7 +160,7 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Remove EditAction since we're using inline editing
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

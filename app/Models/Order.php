@@ -12,6 +12,7 @@ class Order extends Model
     protected $fillable = [
         'dining_table_id',
         'status',
+        'is_paid',
     ];
 
     protected $appends = [
