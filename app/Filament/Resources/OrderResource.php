@@ -77,7 +77,7 @@ class OrderResource extends Resource
                     ->required(),
 
                 Forms\Components\TextInput::make('grand_total')
-                    ->label('Total Amount')
+                    ->label('Total Payment')
                     ->prefix('Rp.')
                     ->disabled()
                     ->numeric(),
@@ -157,7 +157,9 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('Hide Served')
+                    ->query(fn(Builder $query) => $query->where('status', '!=', 'served'))
+                    ->default(),
             ])
             ->actions([
                 // Remove EditAction since we're using inline editing
