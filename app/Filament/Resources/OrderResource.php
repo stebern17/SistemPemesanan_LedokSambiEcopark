@@ -29,12 +29,27 @@ class OrderResource extends Resource
                     ->relationship('items')
                     ->label('Menu')
                     ->schema([
+                        Forms\Components\Select::make('category')
+                            ->options(
+                                fn() => \App\Models\Menu::select('category')
+                                    ->distinct()
+                                    ->pluck('category', 'category')
+                                    ->mapWithKeys(fn($category) => [$category => ucfirst($category)])
+                            )
+                            ->label('Category')
+                            ->required()
+                            ->reactive(),
                         Forms\Components\Select::make('menu_id')
                             ->relationship('menu', 'name')
                             ->required()
                             ->searchable()
                             ->preload()
                             ->reactive()
+                            ->options(function (callable $get) {
+                                $category = $get('category');
+                                return \App\Models\Menu::where('category', $category)
+                                    ->pluck('name', 'id');
+                            })
                             ->afterStateUpdated(function ($state, callable $set) {
                                 $menu = \App\Models\Menu::find($state);
                                 $set('price', $menu ? $menu->price : 0);
@@ -44,8 +59,13 @@ class OrderResource extends Resource
                             ->numeric()
                             ->reactive()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                                $pricePerItem = $get('price');
+                                $pricePerItem = $get('price') ?? 0;
                                 $set('total_amount', $pricePerItem * $state);
+
+                                // Hitung ulang grand_total setiap kali quantity berubah
+                                $items = $get('../../items'); // Akses semua item di Repeater
+                                $total = collect($items)->sum('total_amount');
+                                $set('../../grand_total', $total); // Update grand_total
                             }),
                         Forms\Components\TextInput::make('price')
                             ->numeric()
@@ -58,9 +78,9 @@ class OrderResource extends Resource
                     ])
                     ->addActionLabel('Add Menu')
                     ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                    ->afterStateUpdated(function ($state, callable $set) {
                         $total = collect($state)->sum('total_amount');
-                        $set('grand_total', $total);
+                        $set('grand_total', $total); // Update grand_total saat item Repeater berubah
                     }),
 
                 Forms\Components\Select::make('dining_table_id')
@@ -116,6 +136,8 @@ class OrderResource extends Resource
                     ->collapsed(false),
             ]);
     }
+
+
 
     public static function table(Table $table): Table
     {

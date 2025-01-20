@@ -53,6 +53,7 @@ class MenuResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
+                    ->formatStateUsing(fn($state) => ucfirst($state))
                     ->alignCenter(),
                 Tables\Columns\ImageColumn::make('image')
                     ->alignCenter(),
