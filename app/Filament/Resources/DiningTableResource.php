@@ -72,9 +72,8 @@ class DiningTableResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->defaultSort('number', 'asc')
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

@@ -49,3 +49,11 @@
 .fi-btn {
     @apply bg-[#414247] !important;
 }
+
+.fi-ta-ctn {
+    @apply shadow-lg;
+}
+
+.fi-select-input {
+    @apply p-2;
+}

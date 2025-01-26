@@ -37,6 +37,9 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
             ])
+            ->colors([
+                'primary1' => Color::hex('#108482'),
+            ])
             ->darkMode(false)
             ->middleware([
                 EncryptCookies::class,

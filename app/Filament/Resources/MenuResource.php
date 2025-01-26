@@ -74,6 +74,7 @@ class MenuResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('category', 'asc')
             ->filters([
                 //
             ])
