@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ledok Sambi Ecopark</title>
+    <script>
+        const csrf_token = "{{ csrf_token() }}";
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -19,7 +22,7 @@
                 <div id="default-carousel" class="relative w-full" data-carousel="slide">
                     <div class="relative h-56 overflow-hidden rounded-2xl">
                         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                            <img src="{{ asset('images/ledoksambi1.png') }}" class="w-full h-full object-cover" alt="...">
+                            <img src="{{ asset('images/ledoksambi1.png') }}" class="w-full h-full object-cover" alt="picture">
                         </div>
                         <div class="hidden duration-700 ease-in-out" data-carousel-item>
                             <img src="{{ asset('images/ledoksambi2.jpg') }}" class="w-full h-full object-cover" alt="...">
@@ -63,18 +66,16 @@
                 </li>
             </ul>
         </div>
-        <div class="mt-2 grid grid-cols-2 gap-4 p-4">
+        <div id="itemsCard" class="container mt-2 grid grid-cols-2 gap-4 p-4">
             @foreach($menus as $menu)
             <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-
                 <img class="rounded-t-lg" src="https://dummyimage.com/600x400/000/fff" alt="Menus Image" />
-
                 <div class="p-5">
                     <a href="#">
                         <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ucfirst($menu->name)}}</h5>
                     </a>
                     <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Rp. {{ number_format($menu->price, 0, ',', '.') }}</p>
-                    <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-[#108482] rounded-lg hover:opacity-50 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <a href="{{route('add-to-cart')}}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-[#108482] rounded-lg hover:opacity-50 add-to-cart" data-name="{{ucfirst($menu->name)}}" data-price="{{$menu->price}}">
                         Add
                         <svg class="w-6 h-6 ms-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                             <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z" />
@@ -85,7 +86,17 @@
             @endforeach
         </div>
 
-
+        <div id="cartButton" class="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-4 w-[80vw] items-center hidden">
+            <a href="{{ route('checkout') }}" class="bg-[#108482] text-white p-2 rounded-full shadow-lg text-center flex justify-between px-6 py-3 hover:opacity-90">
+                <p id="itemsCount">0 Items</p>
+                <div class="flex">
+                    <p id="itemsPrice">Rp. 0</p>
+                    <svg class="w-6 h-6 ms-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10V6a3 3 0 0 1 3-3v0a3 3 0 0 1 3 3v4m3-2 .917 11.923A1 1 0 0 1 17.92 21H6.08a1 1 0 0 1-.997-1.077L6 8h12Z" />
+                    </svg>
+                </div>
+            </a>
+        </div>
 
     </div>
 </body>
