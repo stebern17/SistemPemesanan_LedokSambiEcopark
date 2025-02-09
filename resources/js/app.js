@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const itemsPrice = document.getElementById('itemsPrice');
     const itemsCard = document.getElementById('itemsCard');
 
+    // Menambahkan event listener untuk tombol update quantity
+    
+
     // Add click event listeners to all add-to-cart buttons
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function(e) {

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Ledok Sambi Ecopark</title>
     <script>
-        const csrf_token = "{{ csrf_token() }}";
+        window.csrf_token = "{{ csrf_token() }}"; // Add this line
     </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
