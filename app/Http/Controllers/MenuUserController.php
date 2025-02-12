@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Menu;
+use App\Models\Order;
+use App\Models\OrderDetail;
+use App\Models\DiningTable;
+use App\Models\Payment;
 use Midtrans\Config;
 use Midtrans\Snap;
 
 class MenuUserController extends Controller
 {
-
     public function __construct()
     {
         // Set konfigurasi Midtrans
@@ -20,6 +23,7 @@ class MenuUserController extends Controller
         Config::$is3ds = true;
     }
 
+    // Page Welcome
     public function index(Request $request)
     {
         // Ambil kategori dari query string, default ke 'food'
@@ -32,18 +36,24 @@ class MenuUserController extends Controller
         return view('welcome', compact('menus', 'category'));
     }
 
-    public function checkout()
+    // Page Checkout
+    public function checkout(Request $request)
     {
         $cartData = session('cartData', [
             'itemCount' => 0,
             'totalPrice' => 0,
-            'items' => []
+            'items' => [],
+            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
         ]);
 
-        // Pass cart data to the checkout view
-        return view('checkout', compact('cartData'));
+        // Retrieve dining tables from the query string, default to an empty array
+        $diningTable = DiningTable::all();
+
+        // Pass cart data and dining table data to the checkout view
+        return view('checkout', compact('cartData', 'diningTable'));
     }
 
+    // Page Welcome
     public function addToCart(Request $request)
     {
         // Validasi input
@@ -53,11 +63,12 @@ class MenuUserController extends Controller
         ]);
 
         // Ambil data keranjang dari session, atau inisialisasi jika tidak ada
-        $cartData = session('cartData', [
+        $cartData = session('cartData')     ?? [
             'itemCount' => 0,
             'totalPrice' => 0,
-            'items' => []
-        ]);
+            'items' => [],
+            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+        ];
 
         // Ambil detail item dari request
         $itemName = $request->input('name');
@@ -92,6 +103,7 @@ class MenuUserController extends Controller
         ]);
     }
 
+    // Page Checkout
     public function removeFromCart(Request $request)
     {
         $request->validate([
@@ -101,7 +113,8 @@ class MenuUserController extends Controller
         $cartData = session('cartData', [
             'itemCount' => 0,
             'totalPrice' => 0,
-            'items' => []
+            'items' => [],
+            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
         ]);
 
         $itemName = $request->input('name');
@@ -131,19 +144,20 @@ class MenuUserController extends Controller
         ]);
     }
 
-
+    // Get Cart Data Page Welcome
     public function getCartData()
     {
         $cartData = session('cartData', [
             'itemCount' => 0,
             'totalPrice' => 0,
-            'items' => []
+            'items' => [],
+            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
         ]);
 
         return response()->json($cartData);
     }
 
-    // In MenuUserController.php
+    // Update Cart Quantity page Checkout
     public function updateCartQuantity(Request $request)
     {
         $request->validate([
@@ -155,7 +169,8 @@ class MenuUserController extends Controller
         $cartData = session('cartData', [
             'itemCount' => 0,
             'totalPrice' => 0,
-            'items' => []
+            'items' => [],
+            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
         ]);
 
         $totalItems = 0;
@@ -183,13 +198,15 @@ class MenuUserController extends Controller
         ]);
     }
 
+    // Page Checkout
     public function doCheckout()
     {
         // Get the cart data from the session
         $cartData = session('cartData', [
             'itemCount' => 0,
             'totalPrice' => 0,
-            'items' => []
+            'items' => [],
+            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
         ]);
 
         // Clear the cart data from the session
@@ -198,17 +215,18 @@ class MenuUserController extends Controller
         // Data transaksi
         $transactionDetails = [
             'order_id' => 'order-' . time(),
-            'gross_amount' => 10000, // Jumlah yang harus dibayar
+            'gross_amount' => $cartData['totalPrice'], // Jumlah yang harus dibayar
         ];
 
-        $itemDetails = [
-            [
-                'id' => 'item1',
-                'price' => 10000,
-                'quantity' => 1,
-                'name' => 'Item Name',
-            ],
-        ];
+        $itemDetails = [];
+        foreach ($cartData['items'] as $item) {
+            $itemDetails[] = [
+                'id' => $item['name'],
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'name' => $item['name'],
+            ];
+        }
 
         $customerDetails = [
             'first_name' => "John",
@@ -236,5 +254,27 @@ class MenuUserController extends Controller
         $snapToken = Snap::getSnapToken($transactionData);
 
         return response()->json(['snapToken' => $snapToken]);
+    }
+
+    // Fungsi untuk menyimpan nomor meja
+    public function saveTable(Request $request)
+    {
+        $tableNumber = $request->input('tableNumber');
+
+        // Ambil data keranjang dari session, atau inisialisasi jika tidak ada
+        $cartData = session('cartData') ?? [
+            'itemCount' => 0,
+            'totalPrice' => 0,
+            'items' => [],
+            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+        ];
+
+        // Simpan nomor meja ke dalam data keranjang
+        $cartData['tableNumber'] = $tableNumber;
+
+        // Simpan data keranjang yang diperbarui ke session
+        session(['cartData' => $cartData]);
+
+        return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber]);
     }
 }

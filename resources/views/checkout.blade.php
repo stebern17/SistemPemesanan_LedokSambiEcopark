@@ -63,6 +63,26 @@
         @endif
 
         <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-200 mb-5">
+            <div>
+                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class=" hover:opacity-50 w-full  font-medium rounded-lg text-sm items-center flex justify-between" type="button">
+                    <h3 class="text-lg font-semibold">Pilih Meja</h3>
+                    <p id="selectedTable"></p>
+
+                </button>
+                <!-- Dropdown menu -->
+                <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                        @foreach($diningTable as $table)
+                        <li class="flex justify-between">
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ $table['number'] }}</a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-200 mb-5">
             <div class="flex justify-between">
                 <h3 class="text-lg font-semibold" id="doCheckout">Proses</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -70,7 +90,6 @@
                 </svg>
             </div>
         </div>
-    </div>
 </body>
 
 </html>

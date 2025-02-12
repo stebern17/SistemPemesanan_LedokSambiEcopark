@@ -10,3 +10,4 @@ Route::get('/get-cart-data', [MenuUserController::class, 'getCartData'])->name('
 Route::post('/update-cart-quantity', [MenuUserController::class, 'updateCartQuantity'])->name('update-cart-quantity');
 Route::post('/remove-from-cart', [MenuUserController::class, 'removeFromCart'])->name('remove-from-cart');
 Route::post('/checkout', [MenuUserController::class, 'doCheckout'])->name('checkout-post');
+Route::post('/save-table', [MenuUserController::class, 'saveTable']);
