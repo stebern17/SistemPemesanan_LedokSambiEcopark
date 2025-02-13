@@ -8,9 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const itemsPrice = document.getElementById('itemsPrice');
     const itemsCard = document.getElementById('itemsCard');
 
-    // Menambahkan event listener untuk tombol update quantity
-    
-
     // Add click event listeners to all add-to-cart buttons
     document.querySelectorAll('.add-to-cart').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -62,8 +59,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to update cart display
     function updateCartDisplay(data) {
         // Show cart button if hidden
-        cartButton.classList.remove('hidden');
-        itemsCard.classList.add('mb-16');
+        if (data.itemCount > 0) {
+            cartButton.classList.remove('hidden');
+            itemsCard.classList.add('mb-16');
+        }
         
         // Update items count
         itemsCount.textContent = `${data.itemCount} Items`;
@@ -80,11 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize cart display if there's existing cart data
-    if (cartButton && !cartButton.classList.contains('hidden')) {
-        // You might want to make an initial request to get cart data
-        fetch('/get-cart-data')
-            .then(response => response.json())
-            .then(data => updateCartDisplay(data))
-            .catch(error => console.error('Error loading cart data:', error));
-    }
+    fetch('/get-cart-data')
+        .then(response => response.json())
+        .then(data => updateCartDisplay(data))
+        .catch(error => console.error('Error loading cart data:', error));
 });

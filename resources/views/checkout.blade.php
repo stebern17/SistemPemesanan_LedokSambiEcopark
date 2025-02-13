@@ -74,7 +74,7 @@
                     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
                         @foreach($diningTable as $table)
                         <li class="flex justify-between">
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{{ $table['number'] }}</a>
+                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-table-id="{{ $table['id'] }}">{{ $table['number'] }}</a>
                         </li>
                         @endforeach
                     </ul>
@@ -90,6 +90,14 @@
                 </svg>
             </div>
         </div>
+
+        <a href="{{ route('debug') }}">
+            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">debug</button>
+        </a>
+
+
+
+
 </body>
 
 </html>

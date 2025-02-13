@@ -43,7 +43,8 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null // Tambahkan tableId ke dalam cartData
         ]);
 
         // Retrieve dining tables from the query string, default to an empty array
@@ -67,7 +68,8 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
         ];
 
         // Ambil detail item dari request
@@ -114,7 +116,8 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
         ]);
 
         $itemName = $request->input('name');
@@ -151,7 +154,8 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
         ]);
 
         return response()->json($cartData);
@@ -170,7 +174,8 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
         ]);
 
         $totalItems = 0;
@@ -206,15 +211,23 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
         ]);
 
         // Clear the cart data from the session
         session(['cartData' => null]);
 
+        // Create a new order
+        Order::create([
+            'dining_table_id' => $cartData['tableId'],
+            'status' => 'waiting',
+            'is_paid' => true,
+        ]);
+
         // Data transaksi
         $transactionDetails = [
-            'order_id' => 'order-' . time(),
+            'order_id' => Order::latest()->first()->id,
             'gross_amount' => $cartData['totalPrice'], // Jumlah yang harus dibayar
         ];
 
@@ -226,6 +239,14 @@ class MenuUserController extends Controller
                 'quantity' => $item['quantity'],
                 'name' => $item['name'],
             ];
+
+            OrderDetail::create([
+                'order_id' => Order::latest()->first()->id,
+                'menu_id' => Menu::where('name', $item['name'])->first()->id,
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'total_amount' => $cartData['totalPrice'],
+            ]);
         }
 
         $customerDetails = [
@@ -247,7 +268,6 @@ class MenuUserController extends Controller
         $transactionData = [
             'transaction_details' => $transactionDetails,
             'item_details' => $itemDetails,
-            'customer_details' => $customerDetails,
         ];
 
         // Mengambil URL pembayaran
@@ -260,21 +280,38 @@ class MenuUserController extends Controller
     public function saveTable(Request $request)
     {
         $tableNumber = $request->input('tableNumber');
+        $tableId = $request->input('tableId');
 
         // Ambil data keranjang dari session, atau inisialisasi jika tidak ada
         $cartData = session('cartData') ?? [
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
         ];
 
         // Simpan nomor meja ke dalam data keranjang
         $cartData['tableNumber'] = $tableNumber;
+        $cartData['tableId'] = $tableId;
+
 
         // Simpan data keranjang yang diperbarui ke session
         session(['cartData' => $cartData]);
 
-        return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber]);
+        return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber, 'tableId' => $tableId]);
+    }
+
+    public function debug()
+    {
+        $cartData = session('cartData', [
+            'itemCount' => 0,
+            'totalPrice' => 0,
+            'items' => [],
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
+        ]);
+
+        dd($cartData);
     }
 }
