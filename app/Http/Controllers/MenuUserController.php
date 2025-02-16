@@ -245,25 +245,10 @@ class MenuUserController extends Controller
                 'menu_id' => Menu::where('name', $item['name'])->first()->id,
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
-                'total_amount' => $cartData['totalPrice'],
+                'total_amount' => $item['price'] * $item['quantity'],
             ]);
         }
 
-        $customerDetails = [
-            'first_name' => "John",
-            'last_name' => "Doe",
-            'email' => "john.doe@example.com",
-            'phone' => "081234567890",
-            'billing_address' => [
-                'first_name' => 'John',
-                'last_name' => 'Doe',
-                'address' => 'Baker Street',
-                'city' => 'London',
-                'postal_code' => '12345',
-                'phone' => '081234567890',
-                'country' => 'Indonesia',
-            ],
-        ];
 
         $transactionData = [
             'transaction_details' => $transactionDetails,
