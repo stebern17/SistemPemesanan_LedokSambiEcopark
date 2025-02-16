@@ -82,12 +82,9 @@
             </div>
         </div>
 
-        <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-200 mb-5">
-            <div class="flex justify-between">
-                <h3 class="text-lg font-semibold" id="doCheckout">Proses</h3>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
+        <div class="bg-[#108482] p-4 rounded-full shadow-lg border border-gray-200 mb-5 my-auto">
+            <div class="items-center">
+                <h3 class="text-lg text-white font-semibold text-center" id="doCheckout">Order Now</h3>
             </div>
         </div>
 

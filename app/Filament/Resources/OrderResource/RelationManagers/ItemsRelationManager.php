@@ -83,7 +83,7 @@ class ItemsRelationManager extends RelationManager
         $fileName = sprintf('Order-%s.pdf', $order->id);
 
         return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
+            echo $pdf->stream();
         }, $fileName);
     }
 
