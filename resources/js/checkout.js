@@ -87,9 +87,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const item = this.closest('.grid.grid-cols-2');
             const quantityInput = item.querySelector('input[data-input-counter]');
             let quantity = parseInt(quantityInput.value);
+            quantityInput.value = quantity--;
+            console.log(quantity);
 
-            if (quantity > 1) {
-                quantityInput.value = quantity; // Update input value
+            if (quantity >= 1) {
                 const priceElement = item.querySelector('p');
                 const price = parseFloat(priceElement.innerText.replace('Rp. ', '').replace(/\./g, '').trim());
                 updateCartQuantity(item.dataset.name, quantity, price); // Update cart quantity on server
@@ -120,10 +121,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const item = this.closest('.grid.grid-cols-2');
             const quantityInput = item.querySelector('input[data-input-counter]');
             let quantity = parseInt(quantityInput.value);
-            quantityInput.value = quantity; // Update input value
+            quantityInput.value = quantity++; // Update input value
             const priceElement = item.querySelector('p');
             const price = parseFloat(priceElement.innerText.replace('Rp. ', '').replace(/\./g, '').trim());
             updateCartQuantity(item.dataset.name, quantity, price); // Update cart quantity on server
+            console.log(quantity);
         });
     });
 
