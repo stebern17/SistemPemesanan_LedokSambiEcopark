@@ -2,52 +2,14 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
+    <!-- <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> -->
     <title>Order Receipt</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .receipt-info {
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th,
-        td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f8f9fa;
-        }
-
-        .total {
-            text-align: right;
-            font-weight: bold;
-            font-size: 16px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ public_path('receipt.css') }}" type="text/css">
 </head>
 
 <body>
-    <div class="header">
-        <img src="{{ asset('images/Logo Ledok Sambi.png') }}" alt="Ledok Sambi Ecopark">
+    <div class="header text-white">
+        <img src="{{ public_path('images/Logo Ledok Sambi.png') }}" alt="Ledok Sambi Ecopark" class="logo">
         <p>{{ $receipt_number }}</p>
     </div>
 

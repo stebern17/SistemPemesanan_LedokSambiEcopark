@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify({ 
                 tableNumber: tableNumber,
-                tableId: tableId // Sertakan ID meja dalam body permintaan
+                tableId: tableId || localStorage.getItem('selectedTableId') // Sertakan ID meja dalam body permintaan
             })
         })
         .then(response => response.json())

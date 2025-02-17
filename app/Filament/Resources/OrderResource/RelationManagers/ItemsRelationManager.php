@@ -78,7 +78,14 @@ class ItemsRelationManager extends RelationManager
             'total' => $total,
             'date' => now()->format('d/m/Y H:i:s'),
             'receipt_number' => sprintf('RCP-%s-%s', $order->id, now()->format('YmdHis'))
-        ]);
+        ])
+            ->setOption([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'sans-serif',
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+            ]);
 
         $fileName = sprintf('Order-%s.pdf', $order->id);
 
