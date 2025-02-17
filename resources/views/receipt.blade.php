@@ -10,7 +10,7 @@
 <body>
     <div class="header text-white">
         <img src="{{ public_path('images/Logo Ledok Sambi.png') }}" alt="Ledok Sambi Ecopark" class="logo">
-        <p>{{ $receipt_number }}</p>
+        <p class="ReceiptNumber">{{ $receipt_number }}</p>
     </div>
 
     <div class="receipt-info">
