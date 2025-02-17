@@ -284,7 +284,7 @@ class MenuUserController extends Controller
         // Simpan data keranjang yang diperbarui ke session
         session(['cartData' => $cartData]);
 
-        return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber, 'tableId' => $tableId]);
+        return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber, 'tableId' => $tableId, 'order item' => $cartData]);
     }
 
     public function debug()
