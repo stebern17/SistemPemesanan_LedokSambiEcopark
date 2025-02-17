@@ -10,6 +10,7 @@ use App\Models\DiningTable;
 use App\Models\Payment;
 use Midtrans\Config;
 use Midtrans\Snap;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MenuUserController extends Controller
 {
@@ -220,6 +221,7 @@ class MenuUserController extends Controller
 
         // Create a new order
         Order::create([
+            'id' => uniqid(),
             'dining_table_id' => $cartData['tableId'],
             'status' => 'waiting',
             'is_paid' => true,
@@ -286,17 +288,16 @@ class MenuUserController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber, 'tableId' => $tableId, 'order item' => $cartData]);
     }
-
-    public function debug()
-    {
-        $cartData = session('cartData', [
-            'itemCount' => 0,
-            'totalPrice' => 0,
-            'items' => [],
-            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
-            'tableId' => null
-        ]);
-
-        dd($cartData);
-    }
 }
+// public function debug()
+// {
+//     $cartData = session('cartData', [
+//         'itemCount' => 0,
+//         'totalPrice' => 0,
+//         'items' => [],
+//         'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+//         'tableId' => null
+//     ]);
+
+//     dd($cartData);
+// }

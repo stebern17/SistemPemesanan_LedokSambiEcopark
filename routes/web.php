@@ -12,4 +12,4 @@ Route::post('/update-cart-quantity', [MenuUserController::class, 'updateCartQuan
 Route::post('/remove-from-cart', [MenuUserController::class, 'removeFromCart'])->name('remove-from-cart');
 Route::post('/checkout', [MenuUserController::class, 'doCheckout'])->name('checkout-post');
 Route::post('/save-table', [MenuUserController::class, 'saveTable']);
-Route::get('/debug', [MenuUserController::class, 'debug'])->name('debug');
+// Route::get('/debug', [MenuUserController::class, 'debug'])->name('debug');

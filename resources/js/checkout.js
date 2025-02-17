@@ -15,14 +15,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Fungsi untuk menghitung total harga
     function calculateTotalPrice() {
         let totalPrice = 0;
-        const cartItems = document.querySelectorAll('.grid.grid-cols-2');
-
+        const cartItems = document.querySelectorAll('#itemOnCart'); // Use querySelectorAll to select all cart items
+    
         cartItems.forEach(item => {
             const priceElement = item.querySelector('p'); // Mengambil elemen harga
             const quantityInput = item.querySelector('input[data-input-counter]'); // Mengambil elemen input quantity
             const price = parseFloat(priceElement.innerText.replace('Rp. ', '').replace(/\./g, '').trim()); // Mengambil harga dan menghapus format
             const quantity = parseInt(quantityInput.value); // Mengambil nilai quantity
-
+    
             if (quantity > 0) {
                 // Menghitung total harga untuk item ini
                 totalPrice += price * quantity;
@@ -42,11 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-
+    
         // Memperbarui total harga di tampilan
-        const totalPriceElement = document.querySelector('.flex.justify-between h3.text-lg.font-bold');
+        const totalPriceElement = document.getElementById('total-price'); // Use getElementById to select the total price element
         totalPriceElement.innerText = 'Rp. ' + totalPrice.toLocaleString('id-ID'); // Format ke IDR
     }
+    
 
     const debouncedCalculateTotalPrice = debounce(calculateTotalPrice, 500);
 
@@ -88,8 +89,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const quantityInput = item.querySelector('input[data-input-counter]');
             let quantity = parseInt(quantityInput.value);
             quantityInput.value = quantity--;
-            console.log(quantity);
-
             if (quantity >= 1) {
                 const priceElement = item.querySelector('p');
                 const price = parseFloat(priceElement.innerText.replace('Rp. ', '').replace(/\./g, '').trim());
@@ -125,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const priceElement = item.querySelector('p');
             const price = parseFloat(priceElement.innerText.replace('Rp. ', '').replace(/\./g, '').trim());
             updateCartQuantity(item.dataset.name, quantity, price); // Update cart quantity on server
-            console.log(quantity);
         });
     });
 
@@ -190,9 +188,20 @@ tableLinks.forEach(link => {
     if (savedTable) {
         selectTable(savedTable); // Panggil fungsi selectTable dengan nomor meja yang disimpan
     }
+
+    document.getElementById('openModal').addEventListener('click', function () {
+        document.getElementById('paymentModal').classList.remove('hidden');
+        document.getElementById('paymentModal').classList.add('flex');
+
+    });
+
+    document.getElementById('closeModal').addEventListener('click', function () {
+        document.getElementById('paymentModal').classList.add('hidden');
+        document.getElementById('paymentModal').classList.remove('flex');
+    });
     
 
-    document.getElementById('doCheckout').addEventListener('click', function () {
+    document.getElementById('payCashless').addEventListener('click', function () {
         fetch('/checkout', {
             method: 'POST',
             headers: {
