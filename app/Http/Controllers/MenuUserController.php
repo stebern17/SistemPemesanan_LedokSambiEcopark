@@ -220,16 +220,18 @@ class MenuUserController extends Controller
         session(['cartData' => null]);
 
         // Create a new order
-        Order::create([
+        $order = Order::create([
             'id' => uniqid(),
             'dining_table_id' => $cartData['tableId'],
             'status' => 'waiting',
             'is_paid' => true,
         ]);
 
+        DiningTable::find($cartData['tableId'])->update(['status' => 'unavailable']);
+
         // Data transaksi
         $transactionDetails = [
-            'order_id' => Order::latest()->first()->id,
+            'order_id' => $order->id,
             'gross_amount' => $cartData['totalPrice'], // Jumlah yang harus dibayar
         ];
 
@@ -243,14 +245,13 @@ class MenuUserController extends Controller
             ];
 
             OrderDetail::create([
-                'order_id' => Order::latest()->first()->id,
+                'order_id' => $order->id,
                 'menu_id' => Menu::where('name', $item['name'])->first()->id,
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
                 'total_amount' => $item['price'] * $item['quantity'],
             ]);
         }
-
 
         $transactionData = [
             'transaction_details' => $transactionDetails,
@@ -260,8 +261,75 @@ class MenuUserController extends Controller
         // Mengambil URL pembayaran
         $snapToken = Snap::getSnapToken($transactionData);
 
+
+
         return response()->json(['snapToken' => $snapToken]);
     }
+
+
+    // Fungsi untuk menangani pembayaran tunai
+    // public function doCashCheckout()
+    // {
+    //     // Get the cart data from the session
+    //     $cartData = session('cartData', [
+    //         'itemCount' => 0,
+    //         'totalPrice' => 0,
+    //         'items' => [],
+    //         'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+    //         'tableId' => null
+    //     ]);
+
+    //     // Clear the cart data from the session
+    //     session(['cartData' => null]);
+
+    //     // Create a new order
+    //     $order = Order::create([
+    //         'id' => uniqid(),
+    //         'dining_table_id' => $cartData['tableId'],
+    //         'status' => 'waiting',
+    //         'is_paid' => false,
+    //     ]);
+
+    //     DiningTable::find($cartData['tableId'])->update(['status' => 'unavailable']);
+
+
+    //     $itemDetails = [];
+    //     foreach ($cartData['items'] as $item) {
+    //         $itemDetails[] = [
+    //             'id' => $item['name'],
+    //             'price' => $item['price'],
+    //             'quantity' => $item['quantity'],
+    //             'name' => $item['name'],
+    //         ];
+
+    //         OrderDetail::create([
+    //             'order_id' => $order->id,
+    //             'menu_id' => Menu::where('name', $item['name'])->first()->id,
+    //             'price' => $item['price'],
+    //             'quantity' => $item['quantity'],
+    //             'total_amount' => $item['price'] * $item['quantity'],
+    //         ]);
+    //     }
+
+    //     // Redirect ke halaman invoice dengan order ID
+    //     return redirect()->route('cashPayment', ['orderId' => $order->id]);
+    // }
+
+    // // Fungsi untuk menampilkan halaman invoice
+    // public function showInvoice($orderId)
+    // {
+    //     // Ambil data order berdasarkan order ID
+    //     $order = Order::with('orderDetails', 'diningTable')->find($orderId);
+
+    //     if (!$order) {
+    //         return redirect()->route('checkout')->with('error', 'Order not found.');
+    //     }
+
+    //     // Kembalikan view dengan data order
+    //     return view('cashPayment', compact('order'));
+    // }
+
+
 
     // Fungsi untuk menyimpan nomor meja
     public function saveTable(Request $request)

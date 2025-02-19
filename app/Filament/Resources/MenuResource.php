@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -76,7 +77,12 @@ class MenuResource extends Resource
             ])
             ->defaultSort('category', 'asc')
             ->filters([
-                //
+                SelectFilter::make('Category')
+                    ->options([
+                        'food' => 'Food',
+                        'drink' => 'Drink',
+                        'sidedish' => 'Sidedish',
+                    ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

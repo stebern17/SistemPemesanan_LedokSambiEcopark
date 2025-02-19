@@ -19,6 +19,20 @@ class Order extends Model
         'total_amount',
     ];
 
+    protected static function booted()
+    {
+        static::updated(function ($order) {
+            $table = DiningTable::find($order->dining_table_id);
+            if ($table) {
+                // Tentukan status baru berdasarkan status order
+                $newStatus = ($order->status === 'waiting') ? 'unavailable' : 'available';
+
+                // Perbarui status dining table
+                $table->update(['status' => $newStatus]);
+            }
+        });
+    }
+
     public function getTotalAmountAttribute()
     {
         return $this->items->sum('total_amount');

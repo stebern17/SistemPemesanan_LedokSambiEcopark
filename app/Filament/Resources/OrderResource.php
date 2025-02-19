@@ -6,12 +6,15 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\ItemsRelationManager;
 use App\Models\Order;
+use Filament\Actions\EditAction;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Filters\Filter;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -145,9 +148,15 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Order ID')
+                    ->alignCenter()
+                    ->numeric()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('DiningTable.number')
                     ->numeric()
                     ->alignCenter()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('DiningTable.position')
                     ->formatStateUsing(fn($state) => ucfirst($state))
@@ -157,7 +166,7 @@ class OrderResource extends Resource
                     ->options([
                         'waiting' => 'Waiting',
                         'served' => 'Served',
-                        'cancelled' => 'Cancelled',
+                        'canceled' => 'Canceled',
                     ])
                     ->alignCenter(),
                 Tables\Columns\IconColumn::make('is_paid')
@@ -181,13 +190,20 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\Filter::make('Hide Served')
-                    ->query(fn(Builder $query) => $query->where('status', '!=', 'served'))
+                Filter::make('Waiting Orders')
+                    ->query(fn(Builder $query) => $query->where('status', '=', 'waiting'))
                     ->default(),
+                Filter::make('Served Orders')
+                    ->query(fn(Builder $query) => $query->where('status', '=', 'served')),
+                Filter::make('Canceled Orders')
+                    ->query(fn(Builder $query) => $query->where('status', '=', 'canceled')),
             ])
             ->actions([
-                // Remove EditAction since we're using inline editing
                 ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn($record) => !$record->is_paid)
+                    ->label('Pay Now')
+                    ->icon('heroicon-s-currency-yen'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
