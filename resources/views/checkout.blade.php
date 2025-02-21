@@ -23,7 +23,21 @@
         </div>
     </header>
 
-    <div class="container mx-auto mt-5">
+    <div class="my-5 px-4 flex gap-2">
+        <a href="{{ route('welcome')}}">
+            <button>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#108482" class="size-6 hover:opacity-50 active:opacity-100">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+            </button>
+        </a>
+        <p class="text-gray-700 font-semibold">Kembali</p>
+
+    </div>
+
+
+
+    <div class="container mx-auto">
         <h1 class="text-3xl font-bold mb-6">Checkout</h1>
         @if(!empty($cartData['items']))
         @foreach($cartData['items'] as $index => $item)
@@ -35,13 +49,13 @@
                 <form class="max-w-xs mx-auto">
                     <div class="relative flex items-center gap-2">
                         <button type="button" class="decrement-button" data-input-counter-decrement="quantity-input-{{ $index }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="size-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" class="size-8 hover:opacity-50 active:opacity-100">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </button>
                         <input type="text" id="quantity-input-{{ $index }}" data-input-counter aria-describedby="helper-text-explanation" class="bg-gray-50 border-gray-200 h-11 text-center text-gray-900 text-sm block w-full py-2.5 rounded-lg" value="{{$item['quantity']}}" required />
                         <button type="button" class="increment-button" data-input-counter-increment="quantity-input-{{ $index }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" class="size-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" class="size-8 hover:opacity-50 active:opacity-100">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </button>
@@ -97,10 +111,13 @@
             <div class="bg-white rounded-lg shadow-lg p-4 w-full max-w-sm mx-auto">
                 <h2 class="text-xl font-bold mb-4 text-center flex flex-col justify-center">Pilih Metode Pembayaran</h2>
                 <div class="grid grid-cols-2 gap-4">
-                    <button id="payCashless" class="bg-[#108482] text-white px-4 py-2 rounded">Cashless</button>
-                    <button id="payCash" class="bg-[#37368E] text-white px-4 py-2 rounded">Cash</button>
+                    <button id="payCashless" class="bg-[#108482] text-white px-4 py-2 rounded hover:opacity-50 active:opacity-100">Cashless</button>
+                    <button id="payCash" class="bg-[#37368E] text-white px-4 py-2 rounded hover:opacity-50 active:opacity-100">Cash</button>
                 </div>
-                <button id="closeModal" class="mt-4 text-red-500">Tutup</button>
+                <div class="flex justify-center">
+                    <button id="closeModal" class="mt-4 text-red-500">Tutup</button>
+                </div>
+
             </div>
         </div>
 

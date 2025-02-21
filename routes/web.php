@@ -12,4 +12,6 @@ Route::post('/update-cart-quantity', [MenuUserController::class, 'updateCartQuan
 Route::post('/remove-from-cart', [MenuUserController::class, 'removeFromCart'])->name('remove-from-cart');
 Route::post('/checkout', [MenuUserController::class, 'doCheckout'])->name('checkout-post');
 Route::post('/save-table', [MenuUserController::class, 'saveTable']);
+Route::post('/cash-payment', [MenuUserController::class, 'doCashCheckout'])->name('cash-payment');
+Route::get('/cash-payment/{orderId}', [MenuUserController::class, 'showInvoice'])->name('cashPayment');
 // Route::get('/debug', [MenuUserController::class, 'debug'])->name('debug');

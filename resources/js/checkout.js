@@ -200,6 +200,36 @@ tableLinks.forEach(link => {
         document.getElementById('paymentModal').classList.remove('flex');
     });
     
+    document.getElementById('payCash').addEventListener('click', function () {
+        fetch('/cash-payment', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrf_token,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            // Cek jika response adalah JSON
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                return response.json();
+            }
+            throw new Error('Response bukan JSON');
+        })
+        .then(data => {
+            if (data.success) {
+                // Redirect ke halaman invoice
+                window.location.href = data.redirectUrl;
+            } else {
+                alert('Error: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error: ' + error.message);
+        });
+    });
 
     document.getElementById('payCashless').addEventListener('click', function () {
         fetch('/checkout', {

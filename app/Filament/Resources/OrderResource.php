@@ -105,7 +105,8 @@ class OrderResource extends Resource
                     ->label('Total Payment')
                     ->prefix('Rp.')
                     ->disabled()
-                    ->numeric(),
+                    ->numeric()
+                    ->dehydrated(fn($state) => $state !== null),
 
                 Forms\Components\Section::make('Payment')
                     ->schema([
@@ -156,7 +157,6 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('DiningTable.number')
                     ->numeric()
                     ->alignCenter()
-                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('DiningTable.position')
                     ->formatStateUsing(fn($state) => ucfirst($state))
@@ -203,7 +203,7 @@ class OrderResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->visible(fn($record) => !$record->is_paid)
                     ->label('Pay Now')
-                    ->icon('heroicon-s-currency-yen'),
+                    ->icon('heroicon-s-currency-dollar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -227,5 +227,15 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
             'view' => Pages\ViewOrder::route('/{record}'),
         ];
+    }
+
+    public static function afterSave($record): void
+    {
+        // Jika ini adalah edit, hitung grand_total dari items
+        if ($record->wasChanged('items')) {
+            $totalAmount = $record->items->sum('total_amount');
+            $record->grand_total = $totalAmount;
+            $record->saveQuietly();
+        }
     }
 }
