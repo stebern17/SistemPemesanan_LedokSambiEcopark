@@ -69,7 +69,7 @@
         <div id="itemsCard" class="container mt-2 grid grid-cols-2 gap-4 p-4">
             @foreach($menus as $menu)
             <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                <img class="rounded-t-lg" src="{{ asset('storage/'. $menu->image) }}" alt="{{ ucfirst($menu->name) }} Image" />
+                <img class="rounded-t-lg" src="{{ asset('storage/'. $menu?->image) }}" alt="{{ ucfirst($menu->name) }} Image" />
                 <div class="p-5">
                     <a href="#">
                         <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ucfirst($menu->name)}}</h5>
