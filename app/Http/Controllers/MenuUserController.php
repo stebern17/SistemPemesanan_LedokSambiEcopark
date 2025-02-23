@@ -223,7 +223,7 @@ class MenuUserController extends Controller
 
         // Create a new order
         $order = Order::create([
-            'id' => uniqid(),
+            'unique_id' => uniqid(),
             'dining_table_id' => $cartData['tableId'],
             'status' => 'waiting',
             'is_paid' => true,
@@ -233,7 +233,7 @@ class MenuUserController extends Controller
 
         // Data transaksi
         $transactionDetails = [
-            'order_id' => $order->id,
+            'order_id' => $order->unique_id,
             'gross_amount' => $cartData['totalPrice'], // Jumlah yang harus dibayar
         ];
 

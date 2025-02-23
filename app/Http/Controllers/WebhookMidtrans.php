@@ -10,14 +10,16 @@ class WebhookMidtrans extends Controller
 {
     public function payment(Request $request)
     {
-        $order = Payment::where('order_id', $request->order_id)->firstOrFail();
 
-        $order->update([
+        $order = Order::where('unique_id', $request->order_id)->firstOrFail();
+        $payment = Payment::where('order_id', $order->id)->firstOrFail();
+
+        $payment->update([
             'status' => $request->transaction_status,
         ]);
 
         if ($request->transaction_status == 'settlement') {
-            Order::where('id', $request->order_id)->update([
+            $order->update([
                 'is_paid' => true,
             ]);
         }

@@ -9,6 +9,8 @@ use App\Models\Order;
 use Filament\Actions\EditAction;
 use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -19,21 +21,21 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
     protected static ?string $navigationIcon = 'hugeicons-shopping-cart-02';
-
-
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Repeater::make('items')
                     ->relationship('items')
+                    ->columnSpanFull()
                     ->dehydrated()
                     ->label('Menu')
                     ->schema([
@@ -64,7 +66,7 @@ class OrderResource extends Resource
                         Forms\Components\TextInput::make('quantity')
                             ->required()
                             ->numeric()
-                            ->reactive()
+                            ->live()
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $pricePerItem = $get('price') ?? 0;
                                 $set('total_amount', $pricePerItem * $state);
@@ -109,15 +111,22 @@ class OrderResource extends Resource
                     ->disabled()
                     ->numeric()
                     ->dehydrated(fn($state) => $state !== null),
+                Toggle::make('cashless')
+                    ->label('Cashless Payment')
+                    ->live()
+                    ->columnSpanFull()
+
+                    ->dehydrated(fn($state) => $state !== null),
 
                 Forms\Components\Section::make('Payment')
+                    ->visible(fn($get) => !$get('cashless'))
                     ->schema([
                         Forms\Components\TextInput::make('received_amount')
                             ->label('Amount Received')
                             ->prefix('Rp.')
                             ->numeric()
                             ->required()
-                            ->reactive()
+                            ->live()
                             ->debounce(500)
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $grandTotal = $get('grand_total') ?? 0;
@@ -142,7 +151,7 @@ class OrderResource extends Resource
                         Forms\Components\Hidden::make('is_paid')
                             ->default(true),
                     ])
-                    ->collapsed(false),
+
             ]);
     }
 

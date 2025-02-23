@@ -13,6 +13,7 @@ class Order extends Model
         'dining_table_id',
         'status',
         'is_paid',
+        'unique_id'
     ];
 
     protected $appends = [
@@ -51,5 +52,14 @@ class Order extends Model
     public function diningTable()
     {
         return $this->belongsTo(DiningTable::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (Order $order) {
+            $order->unique_id = 'ORD' . str_pad(uniqid(), 5, '0', STR_PAD_LEFT);
+        });
     }
 }
