@@ -26,12 +26,15 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'hugeicons-shopping-cart-02';
 
+
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Repeater::make('items')
                     ->relationship('items')
+                    ->dehydrated()
                     ->label('Menu')
                     ->schema([
                         Forms\Components\Select::make('category')
@@ -42,7 +45,6 @@ class OrderResource extends Resource
                                     ->mapWithKeys(fn($category) => [$category => ucfirst($category)])
                             )
                             ->label('Category')
-                            ->required()
                             ->reactive(),
                         Forms\Components\Select::make('menu_id')
                             ->relationship('menu', 'name')
@@ -116,6 +118,7 @@ class OrderResource extends Resource
                             ->numeric()
                             ->required()
                             ->reactive()
+                            ->debounce(500)
                             ->afterStateUpdated(function ($state, callable $set, callable $get) {
                                 $grandTotal = $get('grand_total') ?? 0;
                                 if ($state < $grandTotal) {

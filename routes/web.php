@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuUserController;
+use App\Http\Controllers\WebhookMidtrans;
 
 Route::get('/', [MenuUserController::class, 'index'])->name('welcome');
 Route::get('/checkout', [MenuUserController::class, 'checkout'])->name('checkout');
@@ -14,4 +15,8 @@ Route::post('/checkout', [MenuUserController::class, 'doCheckout'])->name('check
 Route::post('/save-table', [MenuUserController::class, 'saveTable']);
 Route::post('/cash-payment', [MenuUserController::class, 'doCashCheckout'])->name('cash-payment');
 Route::get('/cash-payment/{orderId}', [MenuUserController::class, 'showInvoice'])->name('cashPayment');
+
+Route::get('/order/{order}/print', [MenuUserController::class, 'printReceipt'])->name('printReceipt');
+
+Route::post('/webhook/payment', [WebhookMidtrans::class, 'payment'])->name('webhook-payment');
 // Route::get('/debug', [MenuUserController::class, 'debug'])->name('debug');

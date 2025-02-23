@@ -8,9 +8,11 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\DiningTable;
 use App\Models\Payment;
+use App\Models\User;
 use Midtrans\Config;
 use Midtrans\Snap;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Notifications\Notification;
 
 class MenuUserController extends Controller
 {
@@ -236,6 +238,7 @@ class MenuUserController extends Controller
         ];
 
         $itemDetails = [];
+        $totalAmount = 0;
         foreach ($cartData['items'] as $item) {
             $itemDetails[] = [
                 'id' => $item['name'],
@@ -243,15 +246,29 @@ class MenuUserController extends Controller
                 'quantity' => $item['quantity'],
                 'name' => $item['name'],
             ];
+            $amount = $item['price'] * $item['quantity'];
 
             OrderDetail::create([
                 'order_id' => $order->id,
                 'menu_id' => Menu::where('name', $item['name'])->first()->id,
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
-                'total_amount' => $item['price'] * $item['quantity'],
+                'total_amount' => $amount,
             ]);
+            $totalAmount = $totalAmount + $amount;
         }
+
+        Notification::make()
+            ->success()
+            ->title('Order Created')
+            ->sendToDatabase(User::where('role', 'admin')->get());
+
+        Payment::create([
+            'order_id' => $order->id,
+            'method' => 'cashless',
+            'amount' => $totalAmount,
+            'status' => 'pending',
+        ]);
 
         $transactionData = [
             'transaction_details' => $transactionDetails,
@@ -294,6 +311,7 @@ class MenuUserController extends Controller
 
 
         $itemDetails = [];
+        $totalAmount = 0;
         foreach ($cartData['items'] as $item) {
             $itemDetails[] = [
                 'id' => $item['name'],
@@ -301,15 +319,29 @@ class MenuUserController extends Controller
                 'quantity' => $item['quantity'],
                 'name' => $item['name'],
             ];
+            $amount = $item['price'] * $item['quantity'];
 
             OrderDetail::create([
                 'order_id' => $order->id,
                 'menu_id' => Menu::where('name', $item['name'])->first()->id,
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
-                'total_amount' => $item['price'] * $item['quantity'],
+                'total_amount' => $amount,
             ]);
+            $totalAmount = $totalAmount + $amount;
         }
+
+        Notification::make()
+            ->success()
+            ->title('Order Created')
+            ->sendToDatabase(User::where('role', 'admin')->get());
+
+        Payment::create([
+            'order_id' => $order->id,
+            'method' => 'cash',
+            'amount' => $totalAmount,
+            'status' => 'pending',
+        ]);
 
         // Redirect ke halaman invoice dengan order ID
         return response()->json([
@@ -365,6 +397,32 @@ class MenuUserController extends Controller
         session(['cartData' => $cartData]);
 
         return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber, 'tableId' => $tableId, 'order item' => $cartData]);
+    }
+
+    public function printReceipt(Order $order)
+    {
+
+        $items = $order->items()->with('menu')->get();
+        $total = $items->sum('total_amount');
+
+        $pdf = Pdf::loadView('receipt', [
+            'order' => $order,
+            'items' => $items,
+            'total' => $total,
+            'date' => now()->format('d/m/Y H:i:s'),
+            'receipt_number' => sprintf('RCP-%s-%s', $order->id, now()->format('YmdHis'))
+        ])
+            ->setOption([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'defaultFont' => 'sans-serif',
+                'isPhpEnabled' => true,
+                'isFontSubsettingEnabled' => true,
+            ]);
+
+        $fileName = sprintf('Order-%s.pdf', $order->id);
+
+        return $pdf->stream($fileName, ['attachment' => false]);
     }
 }
 // public function debug()

@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('order_id');
 
-            $table->enum('method', ['cash', 'debit', 'e-wallet']);
+            $table->string('method')->default('cash');
             $table->unsignedBigInteger('amount');
-            $table->enum('status', ['pending', 'success', 'failed']);
+            $table->string('status')->default('pending');
             $table->timestamps();
 
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');

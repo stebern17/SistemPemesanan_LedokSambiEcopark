@@ -51,9 +51,10 @@ class ItemsRelationManager extends RelationManager
                     ->label('Print Receipt')
                     ->icon('heroicon-o-printer')
                     ->color('success')
-                    ->action(function ($livewire) {
-                        return $this->printReceipt($livewire->ownerRecord);
-                    })
+                    ->url(fn($livewire) => route('printReceipt', ['order' => $livewire->ownerRecord]))
+                    // ->action(function ($livewire) {
+                    //     return $this->printReceipt($livewire->ownerRecord);
+                    // })
                     ->openUrlInNewTab(),
             ])
             ->actions([
@@ -89,9 +90,10 @@ class ItemsRelationManager extends RelationManager
 
         $fileName = sprintf('Order-%s.pdf', $order->id);
 
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->stream();
-        }, $fileName);
+        return $pdf->stream($fileName);
+        // return response()->streamDownload(function () use ($pdf) {
+        //     echo $pdf->stream();
+        // }, $fileName);
     }
 
 

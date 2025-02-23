@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
+use App\Models\Payment;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
@@ -10,6 +11,12 @@ use Filament\Notifications\Notification;
 class EditOrder extends EditRecord
 {
     protected static string $resource = OrderResource::class;
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $data['grand_total'] = $data['total_amount'];
+        return $data;
+    }
 
     protected function getHeaderActions(): array
     {
@@ -33,12 +40,16 @@ class EditOrder extends EditRecord
         }
     }
 
-    protected function afterEdit(): void
+    protected function afterSave(): void
     {
         Notification::make()
             ->success()
             ->title('Order Created')
             ->body('Change amount: Rp.' . number_format($this->data['change_amount'], 0, ',', '.'))
             ->send();
+
+        Payment::where('order_id', $this->record->id)->update([
+            'status' => 'paid',
+        ]);
     }
 }

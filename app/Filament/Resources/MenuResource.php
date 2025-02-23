@@ -20,6 +20,11 @@ class MenuResource extends Resource
 
     protected static ?string $navigationIcon = 'hugeicons-pizza-01';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role == 'admin';
+    }
+
     public static function form(Form $form): Form
     {
         return $form

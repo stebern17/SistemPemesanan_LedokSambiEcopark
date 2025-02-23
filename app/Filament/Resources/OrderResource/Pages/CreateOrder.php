@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
@@ -26,12 +27,19 @@ class CreateOrder extends CreateRecord
         }
     }
 
-    protected function afterCreate(): void
+    protected function after(): void
     {
         Notification::make()
             ->success()
             ->title('Order Created')
             ->body('Change amount: Rp.' . number_format($this->data['change_amount'], 0, ',', '.'))
             ->send();
+
+
+        Notification::make()
+            ->success()
+            ->title('Order Created')
+            ->body('Change amount: Rp.' . number_format($this->data['change_amount'], 0, ',', '.'))
+            ->sendToDatabase(User::where('role', 'admin')->get());
     }
 }
