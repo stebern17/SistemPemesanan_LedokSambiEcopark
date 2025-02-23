@@ -30,8 +30,5 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
             'role' => 'kitchen',
         ]);
-
-        DiningTable::factory(5)->create();
-        Menu::factory(10)->create();
     }
 }
