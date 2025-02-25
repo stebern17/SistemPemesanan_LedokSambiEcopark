@@ -18,9 +18,11 @@ class IncomeChart extends ChartWidget
     {
         if ($this->filter === 'day') {
             // Mengambil data total_amount berdasarkan tanggal
-            $data = OrderDetail::select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total_amount) as total'))
+            $data = OrderDetail::select(DB::raw('DATE(order_details.created_at) as date'), DB::raw('SUM(order_details.total_amount) as total'))
+                ->join('orders', 'order_details.order_id', '=', 'orders.id') // Join with the orders table
+                ->where('orders.is_paid', 1) // Filter for paid orders
                 ->groupBy('date')
-                ->orderBy('date') // Mengurutkan berdasarkan tanggal
+                ->orderBy('date') // Sort by date
                 ->get();
 
             // Format label untuk tanggal
@@ -29,12 +31,14 @@ class IncomeChart extends ChartWidget
             })->toArray();
         } else if ($this->filter === 'month') {
             // Mengambil data total_amount berdasarkan bulan
-            $data = OrderDetail::select(DB::raw('DATE_FORMAT(created_at, "%Y-%m") as date'), DB::raw('SUM(total_amount) as total'))
+            $data = OrderDetail::select(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%m") as date'), DB::raw('SUM(order_details.total_amount) as total'))
+                ->join('orders', 'order_details.order_id', '=', 'orders.id') // Join with the orders table
+                ->where('orders.is_paid', 1) // Filter for paid orders
                 ->groupBy('date')
-                ->orderBy('date') // Mengurutkan berdasarkan bulan
+                ->orderBy('date') // Sort by month
                 ->get();
 
-            // Format label untuk bulan
+            // Format label for month
             $labels = $data->pluck('date')->map(function ($date) {
                 return \Carbon\Carbon::createFromFormat('Y-m', $date)->format('F Y'); // Format: January 2025
             })->toArray();

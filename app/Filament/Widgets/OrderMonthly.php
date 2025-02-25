@@ -25,13 +25,13 @@ class OrderMonthly extends ChartWidget
                     [
                         'label' => 'Order',
                         'data' => [
-                            Order::whereMonth('created_at', '01')->count(),
-                            Order::whereMonth('created_at', '02')->count(),
-                            Order::whereMonth('created_at', '03')->count(),
-                            Order::whereMonth('created_at', '04')->count(),
-                            Order::whereMonth('created_at', '05')->count(),
-                            Order::whereMonth('created_at', '06')->count(),
-                            Order::whereMonth('created_at', '07')->count(),
+                            Order::whereMonth('created_at', '01')->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', '02')->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', '03')->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', '04')->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', '05')->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', '06')->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', '07')->where('status', 'served')->count(),
                         ],
                         'backgroundColor' => '#108482',
                         'borderColor' => '#108482',
@@ -45,9 +45,9 @@ class OrderMonthly extends ChartWidget
                     [
                         'label' => 'Order',
                         'data' => [
-                            Order::whereYear('created_at', '2025')->count(),
-                            Order::whereYear('created_at', '2026')->count(),
-                            Order::whereYear('created_at', '2027')->count(),
+                            Order::whereYear('created_at', '2025')->where('status', 'served')->count(),
+                            Order::whereYear('created_at', '2026')->where('status', 'served')->count(),
+                            Order::whereYear('created_at', '2027')->where('status', 'served')->count(),
                         ],
                         'backgroundColor' => '#108482',
                         'borderColor' => '#108482',

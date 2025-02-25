@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\OrderResource\Pages;
 
 use App\Filament\Resources\OrderResource;
+use App\Models\DiningTable;
 use App\Models\Menu;
 use App\Models\OrderDetail;
+use App\Models\Payment;
 use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
@@ -47,6 +49,7 @@ class CreateOrder extends CreateRecord
 
     protected function afterCreate(): void
     {
+        $data = $this->data;
 
         Notification::make()
             ->success()
@@ -58,8 +61,28 @@ class CreateOrder extends CreateRecord
         Notification::make()
             ->success()
             ->title('Order Created')
-            ->body('Change amount: Rp.' . number_format($this->data['change_amount'], 0, ',', '.'))
+            ->body('Order ID: ' . $this->record->id . ' Change amount: Rp.' . number_format($this->data['change_amount'], 0, ',', '.'))
             ->sendToDatabase(User::where('role', 'admin')->get());
+
+        DiningTable::find($data['dining_table_id'])->update([
+            'status' => 'unavailable',
+        ]);
+
+        if ($data['cashless']) {
+            Payment::create([
+                'order_id' => $this->record->id,
+                'status' => 'paid',
+                'method' => 'cashless',
+                'amount' => $data['grand_total'],
+            ]);
+        } else {
+            Payment::create([
+                'order_id' => $this->record->id,
+                'status' => 'paid',
+                'method' => 'cash',
+                'amount' => $data['grand_total'],
+            ]);
+        }
     }
 
     protected function getRedirectUrl(): string

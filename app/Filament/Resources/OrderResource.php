@@ -103,6 +103,7 @@ class OrderResource extends Resource
                         'served' => 'Served',
                         'cancelled' => 'Cancelled',
                     ])
+                    ->default('waiting')
                     ->required(),
 
                 Forms\Components\TextInput::make('grand_total')

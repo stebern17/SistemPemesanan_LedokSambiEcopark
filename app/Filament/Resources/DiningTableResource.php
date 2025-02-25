@@ -40,6 +40,7 @@ class DiningTableResource extends Resource
                         'available' => 'Available',
                         'unavailable' => 'Unavailable',
                     ])
+                    ->default('available')
                     ->required(),
                 Forms\Components\Select::make('position')
                     ->label('Position')
