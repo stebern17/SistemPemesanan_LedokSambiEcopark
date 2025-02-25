@@ -42,7 +42,7 @@
         @if(!empty($cartData['items']))
         @foreach($cartData['items'] as $index => $item)
         <div id='itemOnCart' class="grid grid-cols-2 items-center border border-gray-200 rounded-lg shadow-lg mb-5 p-4" data-name="{{ $item['name'] }}" data-price="{{ $item['price'] }}" data-quantity="{{ $item['quantity'] }}">
-            <img class="object-cover rounded-lg" src="{{ asset('storage/'. @$item['image']) }}" alt="{{ ucfirst(@$item['name']) }}">
+            <img class="object-cover rounded-lg w-full max-h-32" src="{{ asset('storage/'. @$item['image']) }}" alt="{{ ucfirst(@$item['name']) }}">
             <div class=" flex flex-col justify-between p-4">
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ $item['name'] }}</h5>
                 <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Rp. {{ number_format($item['price'], 0, ',', '.') }}</p>

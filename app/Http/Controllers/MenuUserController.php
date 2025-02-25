@@ -78,6 +78,7 @@ class MenuUserController extends Controller
         // Ambil detail item dari request
         $itemName = $request->input('name');
         $itemPrice = $request->input('price');
+        $itemImage = Menu::where('name', $itemName)->first()->image;
 
         // Cek apakah item sudah ada di keranjang
         $itemIndex = array_search($itemName, array_column($cartData['items'], 'name'));
@@ -90,7 +91,8 @@ class MenuUserController extends Controller
             $cartData['items'][] = [
                 'name' => $itemName,
                 'price' => $itemPrice,
-                'quantity' => 1
+                'quantity' => 1,
+                'image' => $itemImage
             ];
         }
 
@@ -261,6 +263,7 @@ class MenuUserController extends Controller
         Notification::make()
             ->success()
             ->title('Order Created')
+            ->body('Order ID: ' . $order->unique_id . ' Total Payment: Rp.' . number_format($cartData['totalPrice'], 0, ',', '.'))
             ->sendToDatabase(User::where('role', 'admin')->get());
 
         Payment::create([
@@ -334,6 +337,7 @@ class MenuUserController extends Controller
         Notification::make()
             ->success()
             ->title('Order Created')
+            ->body('Order ID: ' . $order->unique_id . ' Total Payment: Rp.' . number_format($cartData['totalPrice'], 0, ',', '.'))
             ->sendToDatabase(User::where('role', 'admin')->get());
 
         Payment::create([
