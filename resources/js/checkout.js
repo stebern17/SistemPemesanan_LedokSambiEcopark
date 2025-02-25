@@ -199,6 +199,52 @@ tableLinks.forEach(link => {
         document.getElementById('paymentModal').classList.add('hidden');
         document.getElementById('paymentModal').classList.remove('flex');
     });
+
+    const noteModal = document.getElementById('noteModal');
+    const closeNoteModalButton = document.getElementById('closeNoteModal');
+    const noteTextarea = document.getElementById('note');
+    let currentItemName = '';
+
+    // Open modal when the note button is clicked
+    document.querySelectorAll('.openNoteModal').forEach(button => {
+        button.addEventListener('click', function () {
+            currentItemName = this.closest('#itemOnCart').dataset.name; // Get item name
+            noteModal.classList.remove('hidden'); // Show modal
+        });
+    });
+    
+    // Close modal and save note
+    closeNoteModalButton.addEventListener('click', function () {
+        const note = noteTextarea.value.trim(); // Get note from textarea and trim whitespace
+    
+        // Make AJAX request to save note
+        fetch('/add-note', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                name: currentItemName,
+                note: note.length > 0 ? note : null // Send null if note is empty
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message); // Show success message
+            }
+            noteModal.classList.add('hidden'); // Hide modal
+            noteTextarea.value = ''; // Clear textarea
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to add note.');
+        });
+    });
+    
+
+    
     
     document.getElementById('payCash').addEventListener('click', function () {
         fetch('/cash-payment', {

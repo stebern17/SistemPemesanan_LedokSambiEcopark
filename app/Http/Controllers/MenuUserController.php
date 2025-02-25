@@ -79,6 +79,7 @@ class MenuUserController extends Controller
         $itemName = $request->input('name');
         $itemPrice = $request->input('price');
         $itemImage = Menu::where('name', $itemName)->first()->image;
+        $itemNote = $request->input('note');
 
         // Cek apakah item sudah ada di keranjang
         $itemIndex = array_search($itemName, array_column($cartData['items'], 'name'));
@@ -92,7 +93,8 @@ class MenuUserController extends Controller
                 'name' => $itemName,
                 'price' => $itemPrice,
                 'quantity' => 1,
-                'image' => $itemImage
+                'image' => $itemImage,
+                'note' => $itemNote
             ];
         }
 
@@ -110,6 +112,49 @@ class MenuUserController extends Controller
         ]);
     }
 
+    public function addNoteToCart(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'name' => 'required|string',
+            'note' => 'nullable|string', // Make note optional
+        ]);
+
+        // Retrieve cart data from session
+        $cartData = session('cartData');
+
+        // Check if cart exists
+        if (!$cartData) {
+            return response()->json(['message' => 'Cart is empty.'], 400);
+        }
+
+        // Get item details from request
+        $itemName = $request->input('name');
+        $itemNote = $request->input('note'); // This can be null or an empty string
+
+        // Check if item exists in cart
+        $itemIndex = array_search($itemName, array_column($cartData['items'], 'name'));
+
+        if ($itemIndex !== false) {
+            // If item exists, update the note
+            $cartData['items'][$itemIndex]['note'] = $itemNote; // This can be null or an empty string
+
+            // Save updated cart data to session
+            session(['cartData' => $cartData]);
+
+            // Return JSON response with updated cart data
+            return response()->json([
+                'message' => 'Note added successfully.',
+                'items' => $cartData['items']
+            ]);
+        } else {
+            return response()->json(['message' => 'Item not found in cart.'], 404);
+        }
+    }
+
+
+
+
     // Page Checkout
     public function removeFromCart(Request $request)
     {
@@ -121,7 +166,7 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null,
             'tableId' => null
         ]);
 
@@ -159,7 +204,7 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null,
             'tableId' => null
         ]);
 
@@ -179,7 +224,7 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null,
             'tableId' => null
         ]);
 
@@ -216,7 +261,7 @@ class MenuUserController extends Controller
             'itemCount' => 0,
             'totalPrice' => 0,
             'items' => [],
-            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableNumber' => null,
             'tableId' => null
         ]);
 
@@ -253,6 +298,7 @@ class MenuUserController extends Controller
             OrderDetail::create([
                 'order_id' => $order->id,
                 'menu_id' => Menu::where('name', $item['name'])->first()->id,
+                'note' => $item['note'],
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
                 'total_amount' => $amount,
@@ -263,7 +309,7 @@ class MenuUserController extends Controller
         Notification::make()
             ->success()
             ->title('Order Created')
-            ->body('Order ID: ' . $order->unique_id . ' Total Payment: Rp.' . number_format($cartData['totalPrice'], 0, ',', '.'))
+            ->body('Order ID: ' . $order->id . ' Total Payment: Rp.' . number_format($cartData['totalPrice'], 0, ',', '.'))
             ->sendToDatabase(User::where('role', 'admin')->get());
 
         Payment::create([
@@ -327,6 +373,7 @@ class MenuUserController extends Controller
             OrderDetail::create([
                 'order_id' => $order->id,
                 'menu_id' => Menu::where('name', $item['name'])->first()->id,
+                'note' => $item['note'],
                 'price' => $item['price'],
                 'quantity' => $item['quantity'],
                 'total_amount' => $amount,
@@ -337,7 +384,7 @@ class MenuUserController extends Controller
         Notification::make()
             ->success()
             ->title('Order Created')
-            ->body('Order ID: ' . $order->unique_id . ' Total Payment: Rp.' . number_format($cartData['totalPrice'], 0, ',', '.'))
+            ->body('Order ID: ' . $order->id . ' Total Payment: Rp.' . number_format($cartData['totalPrice'], 0, ',', '.'))
             ->sendToDatabase(User::where('role', 'admin')->get());
 
         Payment::create([

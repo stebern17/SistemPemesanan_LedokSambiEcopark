@@ -76,6 +76,9 @@ class OrderResource extends Resource
                                 $total = collect($items)->sum('total_amount');
                                 $set('../../grand_total', $total); // Update grand_total
                             }),
+                        Forms\Components\TextInput::make('note')
+                            ->label('Note')
+                            ->reactive(),
                         Forms\Components\TextInput::make('price')
                             ->numeric()
                             ->prefix('Rp.')

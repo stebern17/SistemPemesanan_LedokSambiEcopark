@@ -27,8 +27,14 @@ class ItemsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('menu.name')
                     ->alignCenter()
                     ->formatStateUsing(fn($state) => ucfirst($state)),
+                Tables\Columns\TextColumn::make('note')
+                    ->label('Note')
+                    ->alignCenter()
+                    ->default('-')
+                    ->formatStateUsing(fn($state) => ucfirst($state)),
                 Tables\Columns\TextColumn::make('quantity')
                     ->alignCenter(),
+
                 Tables\Columns\TextColumn::make('menu.price')
                     ->label('Price')
                     ->alignCenter()
