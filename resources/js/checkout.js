@@ -131,63 +131,63 @@ document.addEventListener('DOMContentLoaded', function () {
     debouncedCalculateTotalPrice();
 
     // Fungsi untuk memilih meja
-    function selectTable(tableNumber, tableId) {
-        // Simpan nomor meja dan ID meja ke dalam objek cartData
-        cartData = {
-            tableNumber: tableNumber,
-            tableId: tableId
-        };
+    // function selectTable(tableNumber, tableId) {
+    //     // Simpan nomor meja dan ID meja ke dalam objek cartData
+    //     cartData = {
+    //         tableNumber: tableNumber,
+    //         tableId: tableId
+    //     };
     
-        // Update elemen p dengan nomor meja yang dipilih
-        document.getElementById('selectedTable').innerText = 'Meja Terpilih: ' + tableNumber;
+    //     // Update elemen p dengan nomor meja yang dipilih
+    //     document.getElementById('selectedTable').innerText = 'Meja Terpilih: ' + tableNumber;
     
-        // Kirim data meja ke server
-        sendTableDataToServer(tableNumber, tableId);
+    //     // Kirim data meja ke server
+    //     sendTableDataToServer(tableNumber, tableId);
     
-        // Simpan nomor meja ke localStorage
-        localStorage.setItem('selectedTable', tableNumber);
-        localStorage.setItem('selectedTableId', tableId); // Simpan ID meja ke localStorage
-    }
+    //     // Simpan nomor meja ke localStorage
+    //     localStorage.setItem('selectedTable', tableNumber);
+    //     localStorage.setItem('selectedTableId', tableId); // Simpan ID meja ke localStorage
+    // }
     
-    function sendTableDataToServer(tableNumber, tableId) {
-        fetch('/save-table', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrf_token // Pastikan untuk menyertakan token CSRF untuk Laravel
-            },
-            body: JSON.stringify({ 
-                tableNumber: tableNumber,
-                tableId: tableId || localStorage.getItem('selectedTableId') // Sertakan ID meja dalam body permintaan
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
+    // function sendTableDataToServer(tableNumber, tableId) {
+    //     fetch('/save-table', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'X-CSRF-TOKEN': csrf_token // Pastikan untuk menyertakan token CSRF untuk Laravel
+    //         },
+    //         body: JSON.stringify({ 
+    //             tableNumber: tableNumber,
+    //             tableId: tableId || localStorage.getItem('selectedTableId') // Sertakan ID meja dalam body permintaan
+    //         })
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log('Success:', data);
+    //     })
+    //     .catch((error) => {
+    //         console.error('Error:', error);
+    //     });
+    // }
     
     
     // Menambahkan event listener untuk pemilihan meja
-    const tableLinks = document.querySelectorAll('#dropdown a'); // Ambil semua link meja
-tableLinks.forEach(link => {
-    link.addEventListener('click', function(event) {
-        event.preventDefault(); // Mencegah link default
-        const tableNumber = this.innerText; // Ambil nomor meja dari teks link
-        const tableId = this.dataset.tableId; // Ambil ID meja dari data attribute
-        selectTable(tableNumber, tableId); // Panggil fungsi selectTable dengan nomor dan ID meja
-    });
-});
+//     const tableLinks = document.querySelectorAll('#dropdown a'); // Ambil semua link meja
+// tableLinks.forEach(link => {
+//     link.addEventListener('click', function(event) {
+//         event.preventDefault(); // Mencegah link default
+//         const tableNumber = this.innerText; // Ambil nomor meja dari teks link
+//         const tableId = this.dataset.tableId; // Ambil ID meja dari data attribute
+//         selectTable(tableNumber, tableId); // Panggil fungsi selectTable dengan nomor dan ID meja
+//     });
+// });
 
     
     // Cek jika ada meja yang sudah dipilih saat halaman dimuat
-    const savedTable = localStorage.getItem('selectedTable', 'selectedTableId');
-    if (savedTable) {
-        selectTable(savedTable); // Panggil fungsi selectTable dengan nomor meja yang disimpan
-    }
+    // const savedTable = localStorage.getItem('selectedTable', 'selectedTableId');
+    // if (savedTable) {
+    //     selectTable(savedTable); // Panggil fungsi selectTable dengan nomor meja yang disimpan
+    // }
 
     document.getElementById('openModal').addEventListener('click', function () {
         document.getElementById('paymentModal').classList.remove('hidden');
@@ -292,6 +292,7 @@ tableLinks.forEach(link => {
                     onSuccess: function(result) {
                         console.log('Payment Success:', result);
                         alert('Payment Success! Order ID: ' + result.order_id);
+                        window.location.href = result.finish_redirect_url;
                     },
                     onPending: function(result) {
                         console.log('Payment Pending:', result);

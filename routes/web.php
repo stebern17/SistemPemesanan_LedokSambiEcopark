@@ -8,6 +8,7 @@ use App\Http\Controllers\WebhookMidtrans;
 Route::get('/', [MenuUserController::class, 'index'])->name('welcome');
 
 
+
 Route::get('/checkout', [MenuUserController::class, 'checkout'])->name('checkout');
 Route::post('/add-to-cart', [MenuUserController::class, 'addToCart'])->name('add-to-cart');
 Route::get('/get-cart-data', [MenuUserController::class, 'getCartData'])->name('get-cart-data');
@@ -24,4 +25,7 @@ Route::get('/cash-payment/{orderId}', [MenuUserController::class, 'showInvoice']
 Route::get('/order/{order}/print', [MenuUserController::class, 'printReceipt'])->name('printReceipt');
 
 Route::post('/webhook/payment', [WebhookMidtrans::class, 'payment'])->name('webhook-payment');
+
+
+Route::get('/{tableNumber}', [MenuUserController::class, 'index'])->name('home');
 // Route::get('/debug', [MenuUserController::class, 'debug'])->name('debug');

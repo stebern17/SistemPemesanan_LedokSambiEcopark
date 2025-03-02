@@ -69,12 +69,12 @@
         <div>
             <div class="px-2 mt-2 flex gap-2 text-center">
                 <h3 class="font-semibold p-4">You're in table :</h3>
-                <p class="bg-[#108482] text-white py-4 px-5 rounded-lg drop-shadow-lg">10</p>
+                <p class="bg-[#108482] text-white py-4 px-5 rounded-lg drop-shadow-lg">{{($cartData['tableNumber'])}}</p>
             </div>
         </div>
         <div id="itemsCard" class="container grid grid-cols-2 gap-4 p-4">
             @foreach($menus as $menu)
-            <div class="max-w-sm max-h-sm bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div class="max-w-sm max-h-sm bg-white border flex flex-col justify-between border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
                 <img class="rounded-t-lg w-full max-h-32 object-cover" src="{{ asset('storage/'. $menu?->image) }}" alt="{{ ucfirst($menu->name) }} Image" />
                 <div class="p-5">
                     <h5 class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ucfirst($menu->name)}}</h5>

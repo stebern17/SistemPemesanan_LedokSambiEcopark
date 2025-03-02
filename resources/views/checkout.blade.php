@@ -32,7 +32,13 @@
             </button>
         </a>
         <p class="text-gray-700 font-semibold">Kembali</p>
+    </div>
 
+    <div>
+        <div class="px-2 mt-2 flex gap-2 text-center">
+            <h3 class="font-semibold p-4">You're in table :</h3>
+            <p class="bg-[#108482] text-white py-4 px-5 rounded-lg drop-shadow-lg">{{($cartData['tableNumber'])}}</p>
+        </div>
     </div>
 
 
@@ -82,25 +88,6 @@
         <p class="text-red-500">Your cart is empty. Please add items to your cart first.</p>
         @endif
 
-        <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-200 mb-5">
-            <div>
-                <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class=" hover:opacity-50 w-full  font-medium rounded-lg text-sm items-center flex justify-between" type="button">
-                    <h3 class="text-lg font-semibold">Pilih Meja</h3>
-                    <p id="selectedTable"></p>
-
-                </button>
-                <!-- Dropdown menu -->
-                <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                        @foreach($diningTable as $table)
-                        <li class="flex justify-between">
-                            <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white" data-table-id="{{ $table['id'] }}">{{ $table['number'] }}</a>
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        </div>
 
         <div class="bg-[#108482] p-4 rounded-full shadow-lg border border-gray-200 mb-5 my-auto hover:opacity-70 active:opacity-100" id="openModal">
             <div class="items-center">
@@ -109,8 +96,8 @@
         </div>
 
         <!-- <a href="">
-            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">debug</button>
-        </a> -->
+                <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">debug</button>
+            </a> -->
 
         <!-- Modal -->
         <div id="paymentModal" class="fixed inset-0 items-center justify-center hidden w-full h-full bg-black bg-opacity-50 px-6">

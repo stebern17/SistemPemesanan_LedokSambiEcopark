@@ -115,6 +115,9 @@ class CreateOrder extends CreateRecord
         $paymentUrl = Snap::createTransaction([
             'transaction_details' => $transactionDetails,
             'item_details' => $itemsDetails,
+            'callbacks' => [
+                'finish' => route('printReceipt', $this->record->id),
+            ],
         ])->redirect_url;
 
         return $paymentUrl;

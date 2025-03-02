@@ -35,8 +35,23 @@ class MenuUserController extends Controller
         // Ambil data menu berdasarkan kategori
         $menus = Menu::where('category', $category)->get();
 
+        $cartData = session('cartData') ?? [
+            'itemCount' => 0,
+            'totalPrice' => 0,
+            'items' => [],
+            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+            'tableId' => null
+        ];
+
+        $tableNumber = $request->route('tableNumber') ?? $cartData['tableNumber'];;
+        $tableId = DiningTable::where('number', $tableNumber)->first()->id;
+
+        // Simpan nomor meja ke dalam data keranjang
+        $cartData['tableNumber'] = $tableNumber;
+        $cartData['tableId'] = $tableId;
+        session(['cartData' => $cartData]);
         // Kembalikan view dengan data menu dan kategori
-        return view('welcome', compact('menus', 'category'));
+        return view('welcome', compact('menus', 'category', 'cartData'));
     }
 
     // Page Checkout
@@ -50,11 +65,9 @@ class MenuUserController extends Controller
             'tableId' => null // Tambahkan tableId ke dalam cartData
         ]);
 
-        // Retrieve dining tables from the query string, default to an empty array
-        $diningTable = DiningTable::all();
 
         // Pass cart data and dining table data to the checkout view
-        return view('checkout', compact('cartData', 'diningTable'));
+        return view('checkout', compact('cartData'));
     }
 
     // Page Welcome
@@ -265,8 +278,7 @@ class MenuUserController extends Controller
             'tableId' => null
         ]);
 
-        // Clear the cart data from the session
-        session(['cartData' => null]);
+
 
         // Create a new order
         $order = Order::create([
@@ -322,15 +334,20 @@ class MenuUserController extends Controller
         $transactionData = [
             'transaction_details' => $transactionDetails,
             'item_details' => $itemDetails,
+            'callbacks' => [
+                'finish' => route('printReceipt', ['order' => $order->id])
+            ]
         ];
 
         // Mengambil URL pembayaran
         $snapToken = Snap::getSnapToken($transactionData);
 
 
-
+        // Clear the cart data from the session
+        session(['cartData' => null]);
         return response()->json(['snapToken' => $snapToken]);
     }
+
 
 
     // Fungsi untuk menangani pembayaran tunai
@@ -345,8 +362,6 @@ class MenuUserController extends Controller
             'tableId' => null
         ]);
 
-        // Clear the cart data from the session
-        session(['cartData' => null]);
 
         // Create a new order
         $order = Order::create([
@@ -394,6 +409,8 @@ class MenuUserController extends Controller
             'status' => 'pending',
         ]);
 
+        session(['cartData' => null]);
+
         // Redirect ke halaman invoice dengan order ID
         return response()->json([
             'success' => true,
@@ -421,34 +438,31 @@ class MenuUserController extends Controller
     }
 
 
-
-
-
     // Fungsi untuk menyimpan nomor meja
-    public function saveTable(Request $request)
-    {
-        $tableNumber = $request->input('tableNumber');
-        $tableId = $request->input('tableId');
+    // public function saveTable(Request $request)
+    // {
+    //     $tableNumber = $request->input('tableNumber');
+    //     $tableId = $request->input('tableId');
 
-        // Ambil data keranjang dari session, atau inisialisasi jika tidak ada
-        $cartData = session('cartData') ?? [
-            'itemCount' => 0,
-            'totalPrice' => 0,
-            'items' => [],
-            'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
-            'tableId' => null
-        ];
+    //     // Ambil data keranjang dari session, atau inisialisasi jika tidak ada
+    //     $cartData = session('cartData') ?? [
+    //         'itemCount' => 0,
+    //         'totalPrice' => 0,
+    //         'items' => [],
+    //         'tableNumber' => null, // Tambahkan tableNumber ke dalam cartData
+    //         'tableId' => null
+    //     ];
 
-        // Simpan nomor meja ke dalam data keranjang
-        $cartData['tableNumber'] = $tableNumber;
-        $cartData['tableId'] = $tableId;
+    //     // Simpan nomor meja ke dalam data keranjang
+    //     $cartData['tableNumber'] = $tableNumber;
+    //     $cartData['tableId'] = $tableId;
 
 
-        // Simpan data keranjang yang diperbarui ke session
-        session(['cartData' => $cartData]);
+    //     // Simpan data keranjang yang diperbarui ke session
+    //     session(['cartData' => $cartData]);
 
-        return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber, 'tableId' => $tableId, 'order item' => $cartData]);
-    }
+    //     return response()->json(['status' => 'success', 'message' => 'Table number saved successfully', 'tableNumber' => $tableNumber, 'tableId' => $tableId, 'order item' => $cartData]);
+    // }
 
     public function printReceipt(Order $order)
     {
