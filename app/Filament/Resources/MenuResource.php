@@ -82,7 +82,7 @@ class MenuResource extends Resource
             ])
             ->defaultSort('category', 'asc')
             ->filters([
-                SelectFilter::make('Category')
+                SelectFilter::make('category')
                     ->options([
                         'food' => 'Food',
                         'drink' => 'Drink',

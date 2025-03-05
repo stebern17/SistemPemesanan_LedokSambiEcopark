@@ -81,7 +81,7 @@ class DiningTableResource extends Resource
             ])
             ->defaultSort('number', 'asc')
             ->filters([
-                SelectFilter::make('Status')
+                SelectFilter::make('status')
                     ->options([
                         'available' => 'Available',
                         'unavailable' => 'Unavailable',
