@@ -31,7 +31,7 @@ class IncomeChart extends ChartWidget
             })->toArray();
         } else if ($this->filter === 'month') {
             // Mengambil data total_amount berdasarkan bulan
-            $data = OrderDetail::select(DB::raw('DATE_FORMAT(order_details.created_at, "%Y-%m") as date'), DB::raw('SUM(order_details.total_amount) as total'))
+            $data = OrderDetail::select(DB::raw('TO_CHAR(order_details.created_at, \'YYYY-MM\') as date'), DB::raw('SUM(order_details.total_amount) as total'))
                 ->join('orders', 'order_details.order_id', '=', 'orders.id') // Join with the orders table
                 ->where('orders.is_paid', 1) // Filter for paid orders
                 ->groupBy('date')
@@ -68,8 +68,6 @@ class IncomeChart extends ChartWidget
         ];
     }
 
-
-
     protected function getOptions(): array|RawJs|null
     {
         return [
@@ -91,7 +89,6 @@ class IncomeChart extends ChartWidget
             'day' => 'Daily',
         ];
     }
-
 
     protected function getType(): string
     {

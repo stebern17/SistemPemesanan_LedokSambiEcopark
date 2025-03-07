@@ -16,7 +16,6 @@ class OrderMonthly extends ChartWidget
 
     protected function getData(): array
     {
-
         // buatkan kondisi filter
         if ($this->filter === 'month') {
             $data = [
@@ -25,13 +24,13 @@ class OrderMonthly extends ChartWidget
                     [
                         'label' => 'Order',
                         'data' => [
-                            Order::whereMonth('created_at', '01')->where('status', 'served')->count(),
-                            Order::whereMonth('created_at', '02')->where('status', 'served')->count(),
-                            Order::whereMonth('created_at', '03')->where('status', 'served')->count(),
-                            Order::whereMonth('created_at', '04')->where('status', 'served')->count(),
-                            Order::whereMonth('created_at', '05')->where('status', 'served')->count(),
-                            Order::whereMonth('created_at', '06')->where('status', 'served')->count(),
-                            Order::whereMonth('created_at', '07')->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', 1)->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', 2)->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', 3)->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', 4)->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', 5)->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', 6)->where('status', 'served')->count(),
+                            Order::whereMonth('created_at', 7)->where('status', 'served')->count(),
                         ],
                         'backgroundColor' => '#108482',
                         'borderColor' => '#108482',
@@ -45,9 +44,9 @@ class OrderMonthly extends ChartWidget
                     [
                         'label' => 'Order',
                         'data' => [
-                            Order::whereYear('created_at', '2025')->where('status', 'served')->count(),
-                            Order::whereYear('created_at', '2026')->where('status', 'served')->count(),
-                            Order::whereYear('created_at', '2027')->where('status', 'served')->count(),
+                            Order::whereYear('created_at', 2025)->where('status', 'served')->count(),
+                            Order::whereYear('created_at', 2026)->where('status', 'served')->count(),
+                            Order::whereYear('created_at', 2027)->where('status', 'served')->count(),
                         ],
                         'backgroundColor' => '#108482',
                         'borderColor' => '#108482',
@@ -61,7 +60,6 @@ class OrderMonthly extends ChartWidget
 
     protected function getOptions(): array|RawJs|null
     {
-
         return [
             'scales' => [
                 'y' => [
@@ -81,8 +79,6 @@ class OrderMonthly extends ChartWidget
             'year' => 'Yearly'
         ];
     }
-
-
 
     protected function getType(): string
     {
